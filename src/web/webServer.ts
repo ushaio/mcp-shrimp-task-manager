@@ -1,5 +1,6 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, Express } from "express";
 import getPort from "get-port";
+import { Server as HttpServer } from "http";
 import path from "path";
 import fs from "fs";
 import fsPromises from "fs/promises";
@@ -10,7 +11,13 @@ import {
   getWebGuiFilePath,
 } from "../utils/paths.js";
 
-export async function createWebServer() {
+type WebServerInstance = {
+  app: Express;
+  sendSseUpdate: () => void;
+  startServer: () => Promise<HttpServer>;
+};
+
+export async function createWebServer(): Promise<WebServerInstance> {
   // 創建 Express 應用
   // Create Express application
   const app = express();
